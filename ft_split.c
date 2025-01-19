@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   ft_split.c                                         :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kbossio <marvin@42.fr>                     +#+  +:+       +#+        */
+/*   By: kbossio <kbossio@student.42firenze.it>     +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/21 17:55:00 by kbossio           #+#    #+#             */
-/*   Updated: 2024/11/21 17:55:01 by kbossio          ###   ########.fr       */
+/*   Updated: 2025/01/19 17:10:15 by kbossio          ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,6 +48,19 @@ static char	*duping(const char *s, int a, int b)
 	return (str);
 }
 
+static void	free_all(char **arr, int n)
+{
+	int	i;
+
+	i = 0;
+	while (i < n)
+	{
+		free(arr[i]);
+		i++;
+	}
+	free(arr);
+}
+
 char	**ft_split(char const *s, char c)
 {
 	size_t	inizio;
@@ -69,6 +82,11 @@ char	**ft_split(char const *s, char c)
 		if (s[i - 1] != c && i != 0)
 		{
 			*ptr = duping(s, inizio, i);
+			if (!*ptr)
+			{
+				free_all(salva, ptr - salva);
+				return (NULL);
+			}
 			ptr++;
 		}
 		i++;
@@ -76,7 +94,7 @@ char	**ft_split(char const *s, char c)
 	*ptr = NULL;
 	return (salva);
 }
-/*
+
 #include <stdio.h>
 
 int main()
@@ -95,4 +113,4 @@ int main()
         i++;
     }
     return (0);
-}*/
+}

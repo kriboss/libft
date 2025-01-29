@@ -33,17 +33,24 @@ static int	words(const char *s, char c)
 	return (n);
 }
 
-static char	*duping(const char *s, int a, int b)
+static char	*duping(const char *s, char c)
 {
 	char	*str;
 	int		i;
+	int		len;
 
 	i = 0;
-	str = (char *)malloc(sizeof(char) * (b - a + 1));
+	len = 0;
+	while (s[len] && c != s[len])
+		len++;
+	str = (char *)malloc(sizeof(char) * (len + 1));
 	if (!str)
 		return (NULL);
-	while (a < b)
-		str[i++] = s[a++];
+	while (i < len)
+	{
+		str[i] = s[i];
+		i++;
+	}
 	str[i] = '\0';
 	return (str);
 }
@@ -63,38 +70,31 @@ static void	free_all(char **arr, int n)
 
 char	**ft_split(char const *s, char c)
 {
-	size_t	inizio;
 	size_t	i;
-	char	**ptr;
 	char	**salva;
 
-	inizio = 0;
 	i = 0;
 	salva = (char **)malloc(sizeof(char *) * (words(s, c) + 1));
 	if (!salva || !s)
 		return (NULL);
-	ptr = salva;
-	while (i < ft_strlen(s))
+	while (*s)
 	{
-		inizio = i;
-		while (s[i] != c && s[i])
-			i++;
-		if (s[i - 1] != c && i != 0)
+		while (*s && c == *s)
+			s++;
+		if (*s)
 		{
-			*ptr = duping(s, inizio, i);
-			if (!*ptr)
-			{
-				free_all(salva, ptr - salva);
-				return (NULL);
-			}
-			ptr++;
+			salva[i] = duping(s, c);
+			if (!salva[i])
+				return (free_all(salva, i - 1), NULL);
+			i++;
+			while (*s && c != *s)
+				s++;
 		}
-		i++;
 	}
-	*ptr = NULL;
+	salva[i] = NULL;
 	return (salva);
 }
-
+/*
 #include <stdio.h>
 
 int main()
@@ -114,3 +114,4 @@ int main()
     }
     return (0);
 }
+*/
